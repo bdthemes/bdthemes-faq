@@ -3,7 +3,7 @@
 Plugin Name: BdThemes FAQ
 Plugin URI: http://themeforest.net/user/bdthemes
 Description: This plugin will create a faq custom post type for bdthemes wordpress theme.
-Version: 1.1.0
+Version: 1.1.1
 Author: bdthemes
 Author URI: http://bdthemes.com
 License: Custom
