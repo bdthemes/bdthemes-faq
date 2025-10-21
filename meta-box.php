@@ -37,7 +37,7 @@ if (!class_exists('BdThemesFaqImage')) {
 			    <input type="hidden" name="bdt_faq_image_url" id="bdt_faq_image_url" value="{$image_url}"/>
                 <div id="bdt-faq-image-wrapper">{$image}</div>
                 <p>
-                    <input type="button" class="button button-secondary bdthemes_faq_image" id="bdthemes_faq_image" name="bdthemes_faq_image" value="${faq_label}" />
+                    <input type="button" class="button button-secondary bdthemes_faq_image" id="bdthemes_faq_image" name="bdthemes_faq_image" value="{$faq_label}" />
                 </p>
             </div>
 
