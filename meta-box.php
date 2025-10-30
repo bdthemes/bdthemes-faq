@@ -31,17 +31,14 @@ if (!class_exists('BdThemesFaqImage')) {
 			} else {
 				$image = ' ';
 			}
-			$metabox_html = <<<BDT
-            <div class="form-field term-group-wrap">
-                <input type="hidden" name="bdt_faq_image_id" id="bdt_faq_image_id" value="{$image_id}"/>
-			    <input type="hidden" name="bdt_faq_image_url" id="bdt_faq_image_url" value="{$image_url}"/>
-                <div id="bdt-faq-image-wrapper">{$image}</div>
-                <p>
-                    <input type="button" class="button button-secondary bdthemes_faq_image" id="bdthemes_faq_image" name="bdthemes_faq_image" value="{$faq_label}" />
-                </p>
-            </div>
-
-BDT;
+			$metabox_html = '<div class="form-field term-group-wrap">';
+			$metabox_html .= '<input type="hidden" name="bdt_faq_image_id" id="bdt_faq_image_id" value="' . $image_id . '"/>';
+			$metabox_html .= '<input type="hidden" name="bdt_faq_image_url" id="bdt_faq_image_url" value="' . $image_url . '"/>';
+			$metabox_html .= '<div id="bdt-faq-image-wrapper">' . $image . '</div>';
+			$metabox_html .= '<p>';
+			$metabox_html .= '<input type="button" class="button button-secondary bdthemes_faq_image" id="bdthemes_faq_image" name="bdthemes_faq_image" value="' . $faq_label . '" />';
+			$metabox_html .= '</p>';
+			$metabox_html .= '</div>';
 			echo $metabox_html;
 		}
 		private function is_secured($nonce_field, $action, $post_id) {
