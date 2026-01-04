@@ -1,5 +1,10 @@
 <?php
 
+// Exit if accessed directly
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 if (!class_exists('BdThemesFaqImage')) {
 	class BdThemesFaqImage {
 		public function __construct() {
@@ -15,34 +20,36 @@ if (!class_exists('BdThemesFaqImage')) {
 			if (!$this->is_secured('bdt_faq_image_nonce', 'faq_image', $post_id)) {
 				return $post_id;
 			}
-			$image_id    = isset($_POST['bdt_faq_image_id']) ? $_POST['bdt_faq_image_id'] : '';
-			$image_url    = isset($_POST['bdt_faq_image_url']) ? $_POST['bdt_faq_image_url'] : '';
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is verified in is_secured() method above
+			$image_id = isset($_POST['bdt_faq_image_id']) ? sanitize_text_field(wp_unslash($_POST['bdt_faq_image_id'])) : '';
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is verified in is_secured() method above
+			$image_url = isset($_POST['bdt_faq_image_url']) ? esc_url_raw(wp_unslash($_POST['bdt_faq_image_url'])) : '';
 			update_post_meta($post_id, 'bdt_faq_image_id', $image_id);
 			update_post_meta($post_id, 'bdt_faq_image_url', $image_url);
 		}
 
 		public function faq_metabox_fields_callback($post) {
 			wp_nonce_field('faq_image', 'bdt_faq_image_nonce');
-			$faq_label = esc_html__('Add Icon', 'ultimate-post-kit-pro');
+			$faq_label = esc_html__('Add Icon', 'bdthemes-faq');
 			$image_id = esc_attr(get_post_meta($post->ID, 'bdt_faq_image_id', true));
-			$image_url = esc_attr(get_post_meta($post->ID, 'bdt_faq_image_url', true));
-			if (!empty($image_url)) {
-				$image = '<img width="100%" height="auto" src="' . $image_url . '">';
-			} else {
-				$image = ' ';
-			}
-			$metabox_html = '<div class="form-field term-group-wrap">';
-			$metabox_html .= '<input type="hidden" name="bdt_faq_image_id" id="bdt_faq_image_id" value="' . $image_id . '"/>';
-			$metabox_html .= '<input type="hidden" name="bdt_faq_image_url" id="bdt_faq_image_url" value="' . $image_url . '"/>';
-			$metabox_html .= '<div id="bdt-faq-image-wrapper">' . $image . '</div>';
-			$metabox_html .= '<p>';
-			$metabox_html .= '<input type="button" class="button button-secondary bdthemes_faq_image" id="bdthemes_faq_image" name="bdthemes_faq_image" value="' . $faq_label . '" />';
-			$metabox_html .= '</p>';
-			$metabox_html .= '</div>';
-			echo $metabox_html;
+			$image_url = esc_url(get_post_meta($post->ID, 'bdt_faq_image_url', true));
+			?>
+			<div class="form-field term-group-wrap">
+				<input type="hidden" name="bdt_faq_image_id" id="bdt_faq_image_id" value="<?php echo esc_attr($image_id); ?>"/>
+				<input type="hidden" name="bdt_faq_image_url" id="bdt_faq_image_url" value="<?php echo esc_url($image_url); ?>"/>
+				<div id="bdt-faq-image-wrapper">
+					<?php if (!empty($image_url)) : ?>
+						<img width="100%" height="auto" src="<?php echo esc_url($image_url); ?>" alt="<?php esc_attr_e('FAQ Icon', 'bdthemes-faq'); ?>">
+					<?php endif; ?>
+				</div>
+				<p>
+					<input type="button" class="button button-secondary bdthemes_faq_image" id="bdthemes_faq_image" name="bdthemes_faq_image" value="<?php echo esc_attr($faq_label); ?>" />
+				</p>
+			</div>
+			<?php
 		}
 		private function is_secured($nonce_field, $action, $post_id) {
-			$nonce = isset($_POST[$nonce_field]) ? $_POST[$nonce_field] : '';
+			$nonce = isset($_POST[$nonce_field]) ? sanitize_text_field(wp_unslash($_POST[$nonce_field])) : '';
 
 			if ($nonce == '') {
 				return false;
