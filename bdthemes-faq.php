@@ -1,14 +1,24 @@
 <?php
-/*
-Plugin Name: BdThemes FAQ
-Plugin URI: http://themeforest.net/user/bdthemes
-Description: This plugin will create a faq custom post type for bdthemes wordpress theme.
-Version: 1.1.1
-Author: bdthemes
-Author URI: http://bdthemes.com
-License: Custom
-License URI: http://themeforest.net/licenses
-*/
+/**
+ * Plugin Name: BdThemes FAQ
+ * Plugin URI: https://bdthemes.com/plugins/bdthemes-faq/
+ * Description: This plugin will create a faq custom post type.
+ * Version: 1.0.0
+ * Author: BdThemes
+ * Author URI: https://bdthemes.com/
+ * Text Domain: bdthemes-faq
+ * Domain Path: /languages
+ * License: GPL3
+ * Elementor requires at least: 3.28
+ * Elementor tested up to: 3.34.0
+ * Requires Plugins: elementor
+ */
+
+
+// Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 define('BDTFAQ_PATH', plugin_dir_path(__FILE__));
 
@@ -70,13 +80,35 @@ function bdthemes_faq_column_display($faq_columns, $post_id) {
 		case "faq_filter":
 
 			if ($category_list = get_the_term_list($post_id, 'faq_filter', '', ', ', '')) {
-				echo $category_list; // No need to escape
+				echo wp_kses_post($category_list);
 			} else {
-				echo __('None', 'bdthemes-faq');
+				echo esc_html__('None', 'bdthemes-faq');
 			}
 			break;
 	}
 }
 add_action('manage_posts_custom_column', 'bdthemes_faq_column_display', 10, 2);
+
+/* ----------------------------------------------------- */
+/* Register Elementor Widgets
+/* ----------------------------------------------------- */
+function bdthemes_faq_register_elementor_widget() {
+	if (!did_action('elementor/loaded')) {
+		return;
+	}
+	
+	require_once BDTFAQ_PATH . 'widgets/faq-list.php';
+	\Elementor\Plugin::instance()->widgets_manager->register(new \BdThemes_FAQ_List_Widget());
+	
+}
+add_action('elementor/widgets/register', 'bdthemes_faq_register_elementor_widget');
+
+/* ----------------------------------------------------- */
+/* Enqueue Widget Styles
+/* ----------------------------------------------------- */
+function bdthemes_faq_widget_styles() {
+	wp_register_style('bdthemes-faq-list', plugin_dir_url(__FILE__) . 'assets/css/faq-list.css', array(), '1.1.1');
+}
+add_action('elementor/frontend/after_enqueue_styles', 'bdthemes_faq_widget_styles');
 
 require_once BDTFAQ_PATH . "meta-box.php";
