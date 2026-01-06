@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: BdThemes FAQ
  * Plugin URI: https://bdthemes.com/plugins/bdthemes-faq/
@@ -17,7 +18,7 @@
 
 // Exit if accessed directly
 if (!defined('ABSPATH')) {
-    exit;
+	exit;
 }
 
 define('BDTFAQ_PATH', plugin_dir_path(__FILE__));
@@ -76,7 +77,7 @@ function bdthemes_faq_column_display($faq_columns, $post_id) {
 
 	switch ($faq_columns) {
 
-			// Display the faq tags in the column view
+		// Display the faq tags in the column view
 		case "faq_filter":
 
 			if ($category_list = get_the_term_list($post_id, 'faq_filter', '', ', ', '')) {
@@ -96,10 +97,9 @@ function bdthemes_faq_register_elementor_widget() {
 	if (!did_action('elementor/loaded')) {
 		return;
 	}
-	
+
 	require_once BDTFAQ_PATH . 'widgets/faq-list.php';
 	\Elementor\Plugin::instance()->widgets_manager->register(new \BdThemes_FAQ_List_Widget());
-	
 }
 add_action('elementor/widgets/register', 'bdthemes_faq_register_elementor_widget');
 

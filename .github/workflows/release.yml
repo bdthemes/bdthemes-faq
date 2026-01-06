@@ -1,0 +1,40 @@
+name: Publish Release
+
+on:
+    push:
+        tags:
+            - '*'
+    release:
+        types: [published]
+
+permissions:
+    contents: write
+
+jobs:
+    release-faq:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+            - name: Create bdthemes-faq directory and move files
+              run: |
+                  mkdir -p bdthemes-faq &&
+                  find . -maxdepth 1 -not -name 'bdthemes-faq' -exec mv {} bdthemes-faq \;
+
+            - name: Archive release
+              uses: thedoctor0/zip-release@0.7.6
+              with:
+                  filename: 'bdthemes-faq.zip'
+                  exclusions: "/*node_modules/* /*sync.ffs_db /*.idea/* /*src/* /*.DS_Store /*.gitignore /*.github/* /*.git/* /*.cursorrules /*.eslintrc /*.gitattributes /*.prettierrc /*composer.lock /*package-lock.json /*package.json /*postcss.config.js /*vite.config.js"
+            - name: Display release
+              run: ls -a
+
+            - name: Create Release
+              uses: ncipollo/release-action@v1.14.0
+              with:
+                  artifacts: './bdthemes-faq.zip'
+                  token: ${{ secrets.TOKEN }}
+                  removeArtifacts: true
+                  allowUpdates: true
+                  makeLatest: true
+                  tag: ${{ github.ref_name }}
